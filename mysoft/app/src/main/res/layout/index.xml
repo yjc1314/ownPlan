@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <!--标题栏样式一-->
+   <androidx.appcompat.widget.Toolbar
+       android:id="@+id/toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="?actionBarSize"
+       android:background="@color/colorPrimary"
+       app:subtitleTextColor="@android:color/white"
+       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+       app:title="yjc"
+       app:titleTextColor="@android:color/white"
+      ></androidx.appcompat.widget.Toolbar>
+<androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.viewpager.widget.ViewPager xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mViewPage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:context="com.ownplan.com.ownplan.index.Index"></androidx.viewpager.widget.ViewPager>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <com.ownplan.com.ownplan.views.Tabview
+                android:id="@+id/butttonLT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+            <com.ownplan.com.ownplan.views.Tabview
+                android:id="@+id/butttonFriend"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+            <com.ownplan.com.ownplan.views.Tabview
+                android:id="@+id/butttonStudy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+            <com.ownplan.com.ownplan.views.Tabview
+                android:id="@+id/butttonMine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_gravity="start"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        app:headerLayout="@layout/navigationview_header"
+        app:menu="@menu/menu">
+
+
+    </com.google.android.material.navigation.NavigationView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:layout_height="40dp"
+            android:background="#ffffff"
+
+            >
+
+            <com.ownplan.com.ownplan.views.Newbutton
+                android:id="@+id/setting"
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+
+                ></com.ownplan.com.ownplan.views.Newbutton>
+            <com.ownplan.com.ownplan.views.Newbutton
+                android:id="@+id/finish"
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                ></com.ownplan.com.ownplan.views.Newbutton>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>
