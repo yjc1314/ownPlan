@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--主界面下面的四个Tabview的layout-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+
+    <com.ownplan.com.ownplan.views.Tabview
+        android:id="@+id/butttonLT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+    <com.ownplan.com.ownplan.views.Tabview
+        android:id="@+id/butttonFriend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+    <com.ownplan.com.ownplan.views.Tabview
+        android:id="@+id/butttonStudy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+    <com.ownplan.com.ownplan.views.Tabview
+        android:id="@+id/butttonMine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"></com.ownplan.com.ownplan.views.Tabview>
+
+
+</LinearLayout>

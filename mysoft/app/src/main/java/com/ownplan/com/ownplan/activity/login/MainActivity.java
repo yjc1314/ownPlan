@@ -1,9 +1,20 @@
 package com.ownplan.com.ownplan.activity.login;
 
+import android.Manifest;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -11,22 +22,65 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.ownplan.com.ownplan.index.Index;
 import com.ownplan.com.ownplan.utils.BasicActivity;
+import com.ownplan.com.ownplan.utils.L;
 import com.ownplan.logintest.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+/**
+ * 目前拿到了头像，设置到了那个cicleImagview中但是我们不能先剪切一下
+ * 这是下午我们要做的。需要的过程我们需要获得需要剪切图片的uri然后就是剪切这个图片
+ * 得到的图片一份返回给界面，我们还需要存储一份在sd卡中这样就可以保存下来头像了。
+ */
 
 public class MainActivity extends BasicActivity {
-    private String userName,psw,spPsw;//获取的用户名，密码，加密密码
-    private EditText et_user_name,et_psw;//编辑框
+    public static final int CHOSE_PHOTO = 2;
+    private static final int IMAGE_CUT = 3;
+    public static String PHOTO_URL = null;//这个就是头像的路径
+    private final Context mContext = this;
+    private String userName, psw, spPsw;//获取的用户名，密码，加密密码
+    private EditText et_user_name, et_psw;//编辑框
+    public CircleImageView circleimageView;//头像框
+
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //设置此界面为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         init();
+        // L.d("我的路径是：",PHOTO_URL);
+
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //回调处理我们的请求结果
+        switch(requestCode)
+        {
+            case  1:
+                if(grantResults.length > 0 &&grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+
+                    getPhoto();
+                }
+                else {
+                    Toast.makeText(this,"你取消了请求",Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+
+        }
+    }
+
     //获取界面控件
     private void init() {
         //从main_title_bar中获取的id
@@ -34,14 +88,42 @@ public class MainActivity extends BasicActivity {
         TextView tv_register = (TextView) findViewById(R.id.register);
         TextView tv_find_psw = (TextView) findViewById(R.id.find_psw);
         Button btn_login = (Button) findViewById(R.id.login);
-        et_user_name= (EditText) findViewById(R.id.et_user_name);
-        et_psw= (EditText) findViewById(R.id.et_psw);
+        circleimageView = findViewById(R.id.circleImageview);
+        if(PHOTO_URL != null)
+        {
+            Bitmap b = BitmapFactory.decodeFile(PHOTO_URL);
+            circleimageView.setImageBitmap(b);
+        }else
+        {
+            circleimageView.setImageResource(R.drawable.friend);
+
+        }
+        //注册监听事件
+        circleimageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(mContext,"点击切换头像",Toast.LENGTH_SHORT).show();
+                //检查权限,因为就算再manifest中权限也需要动态权限。
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+                } else {
+                    getPhoto();//得到我在内中我们图片的位置
+                    // L.d();
+                }
+
+            }
+        });
+
+        et_user_name = (EditText) findViewById(R.id.et_user_name);
+        et_psw = (EditText) findViewById(R.id.et_psw);
         //立即注册控件的点击事件
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //为了跳转到注册界面，并实现注册功能
-                Intent intent=new Intent(MainActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, 1);
             }
         });
@@ -94,25 +176,51 @@ public class MainActivity extends BasicActivity {
             }
         });
     }
+
+
+    public void setPhoto(String imagepath) {
+        if (imagepath != null) {
+
+
+            Bitmap bitmap = BitmapFactory.decodeFile(imagepath);
+            circleimageView.setImageBitmap(bitmap);
+        } else {
+
+
+            Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void getPhoto() {
+
+        //打开相册
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+
+        startActivityForResult(intent, CHOSE_PHOTO);
+    }
+
+
     /**
-     *从SharedPreferences中根据用户名读取密码
+     * 从SharedPreferences中根据用户名读取密码
      */
-    private String readPsw(String userName){
+    private String readPsw(String userName) {
         //getSharedPreferences("loginInfo",MODE_PRIVATE);
         //"loginInfo",mode_private; MODE_PRIVATE表示可以继续写入
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("loginInfo", MODE_PRIVATE);
         //sp.getString() userName, "";
-        return sp.getString(userName , "");
+        return sp.getString(userName, "");
     }
+
     /**
-     *保存登录状态和登录用户名到SharedPreferences中
+     * 保存登录状态和登录用户名到SharedPreferences中
      */
-    private void saveLoginStatus(boolean status,String userName){
+    private void saveLoginStatus(boolean status, String userName) {
         //saveLoginStatus(true, userName);
         //loginInfo表示文件名  SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
-        SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器
-        SharedPreferences.Editor editor=sp.edit();
+        SharedPreferences.Editor editor = sp.edit();
         //存入boolean类型的登录状态
         editor.putBoolean("isLogin", status);
         //存入登录状态时的用户名
@@ -120,11 +228,13 @@ public class MainActivity extends BasicActivity {
         //提交修改
         editor.apply();
     }
+
     /**
      * 注册成功的数据返回至此
+     *
      * @param requestCode 请求码
-     * @param resultCode 结果码
-     * @param data 数据
+     * @param resultCode  结果码
+     * @param data        数据
      */
     @Override
     //显示数据， onActivityResult
@@ -133,18 +243,113 @@ public class MainActivity extends BasicActivity {
     // LoginActivity -> startActivityForResult -> onActivityResult();
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        String Tempurl = null;
         super.onActivityResult(requestCode, resultCode, data);
-        if(data!=null){
-            //是获取注册界面回传过来的用户名
-            // getExtra().getString("***");
-            String userName=data.getStringExtra("userName");
-            if(!TextUtils.isEmpty(userName)){
-                //设置用户名到 et_user_name 控件
-                et_user_name.setText(userName);
-                //et_user_name控件的setSelection()方法来设置光标位置
-                et_user_name.setSelection(userName.length());
-            }
+        switch (requestCode) {
+            case 1:
+                if (data != null) {
+                    //是获取注册界面回传过来的用户名
+                    // getExtra().getString("***");
+                    String userName = data.getStringExtra("userName");
+                    if (!TextUtils.isEmpty(userName)) {
+                        //设置用户名到 et_user_name 控件
+                        et_user_name.setText(userName);
+                        //et_user_name控件的setSelection()方法来设置光标位置
+                        et_user_name.setSelection(userName.length());
+                    }
+                }
+                break;
+            case CHOSE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        //的到我们需要剪切前的url
+                       handleImageOnKitkat(data);
+
+
+                    } else {
+
+
+                 handleImageBeforeKitkat(data);
+
+                    }
+
+
+                }
+                //得到了tempurl 这个就是所在文件的目录
+                break;
+
         }
+        setPhoto(PHOTO_URL);
+
+
     }
+
+
+    private void  handleImageBeforeKitkat(Intent data) {
+
+
+        Uri uri = data.getData();
+      //  Crop.of(newuri, uri).asSquare().start(this,IMAGE_CUT);
+        String imagPath = null;
+        /*setPhoto(imagPath);
+        PHOTO_URL = imagPath;
+*/
+        PHOTO_URL = imagPath;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void handleImageOnKitkat(Intent data) {
+
+        String imagPath = null;
+
+        Uri uri = data.getData();
+        //Crop.of(newuri, uri).asSquare().start(this,IMAGE_CUT);
+
+
+        if (DocumentsContract.isDocumentUri(this, uri)) {
+            String docId = DocumentsContract.getDocumentId(uri);
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                String id = docId.split(":")[1];
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imagPath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+
+            } else if ("com.android.provides.downloads.documents".equals(uri.getAuthority())) {
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                imagPath = getImagePath(contentUri, null);
+            }
+        }else if ("content".equals(uri.getScheme())) {
+                imagPath = getImagePath(uri, null);
+
+        } else if ("file".equals(uri.getScheme())) {
+                imagPath = uri.getPath();
+
+
+        }
+        L.d("我的路径是：", imagPath);
+        /*
+        setPhoto(imagPath);
+
+*/
+        PHOTO_URL = imagPath;
+        }
+
+
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString((cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+
+
+            }
+            cursor.close();
+
+
+        }
+        return path;
+    }
+
 
 }

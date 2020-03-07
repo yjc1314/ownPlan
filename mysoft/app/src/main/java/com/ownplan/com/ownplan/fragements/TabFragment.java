@@ -13,9 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.ownplan.com.ownplan.utils.L;
 import com.ownplan.logintest.R;
 
-
-import org.w3c.dom.Text;
-
 public class TabFragment extends Fragment {
 
     private static final String BUNDLE_KEY_TITLE = "key_title";
@@ -69,17 +66,5 @@ public class TabFragment extends Fragment {
             mTVtitle = view.findViewById(R.id.vx_title);
             mTVtitle.setText(mTitle);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        L.d("onDestroyView" + mTitle);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        L.d("onDestroy" + mTitle);
     }
 }

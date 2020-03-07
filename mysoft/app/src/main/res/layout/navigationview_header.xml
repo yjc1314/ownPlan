@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--侧滑栏上面的头像以及输入框和名字的layout-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/headlayout"
     android:orientation="horizontal">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageview"

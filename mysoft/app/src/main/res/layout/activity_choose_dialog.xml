@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </ImageView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    <LinearLayout
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/change"
+            android:layout_width="wrap_content"
+            android:text="更换头像"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="40dp"
+            android:textColor="@android:color/holo_green_light"
+            android:layout_height="0dp">
+
+        </Button>
+        <Button
+            android:id="@+id/cancle"
+            android:layout_width="wrap_content"
+            android:text="取消"
+            android:textColor="@android:color/holo_green_light"
+
+            android:textStyle="bold"
+            android:textSize="40dp"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+        </Button>
+
+    </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+
+

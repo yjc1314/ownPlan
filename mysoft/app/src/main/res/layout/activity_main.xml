@@ -11,13 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginTop="35dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageview"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
 
-        <ImageView
-            android:id="@+id/symbol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_gravity="left"
+            android:gravity="center">
+
+        </de.hdodenhof.circleimageview.CircleImageView>
 
     </LinearLayout>
     <!--输入框-->
@@ -26,7 +30,7 @@
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:hint="账号"
         android:textSize="20sp" />
     <!--输入框-->
