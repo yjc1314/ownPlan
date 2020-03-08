@@ -1,8 +1,10 @@
 package com.ownplan.com.ownplan.activity.login;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -13,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -29,8 +32,12 @@ import androidx.core.content.ContextCompat;
 
 import com.ownplan.com.ownplan.index.Index;
 import com.ownplan.com.ownplan.utils.BasicActivity;
-import com.ownplan.com.ownplan.utils.L;
 import com.ownplan.logintest.R;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -109,8 +116,10 @@ public class MainActivity extends BasicActivity {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
                 } else {
-                    getPhoto();//得到我在内中我们图片的位置
-                    // L.d();
+                     String [] items = new String[]
+                            {"选择图片","取消"};
+                  Diolog(items,"设置头像");
+
                 }
 
             }
@@ -179,10 +188,9 @@ public class MainActivity extends BasicActivity {
 
 
     public void setPhoto(String imagepath) {
-        if (imagepath != null) {
-
-
+        if (!imagepath.equals(null)) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagepath);
+
             circleimageView.setImageBitmap(bitmap);
         } else {
 
@@ -277,6 +285,17 @@ public class MainActivity extends BasicActivity {
                 }
                 //得到了tempurl 这个就是所在文件的目录
                 break;
+            case IMAGE_CUT:
+                if(resultCode == RESULT_OK)
+                {
+                    if(data != null)
+                    {
+                    PHOTO_URL = createFile().getPath();
+                    break;
+
+                    }
+
+                }
 
         }
         setPhoto(PHOTO_URL);
@@ -289,12 +308,10 @@ public class MainActivity extends BasicActivity {
 
 
         Uri uri = data.getData();
-      //  Crop.of(newuri, uri).asSquare().start(this,IMAGE_CUT);
+
         String imagPath = null;
-        /*setPhoto(imagPath);
-        PHOTO_URL = imagPath;
-*/
-        PHOTO_URL = imagPath;
+
+        //PHOTO_URL = imagPath;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -303,7 +320,7 @@ public class MainActivity extends BasicActivity {
         String imagPath = null;
 
         Uri uri = data.getData();
-        //Crop.of(newuri, uri).asSquare().start(this,IMAGE_CUT);
+
 
 
         if (DocumentsContract.isDocumentUri(this, uri)) {
@@ -325,16 +342,58 @@ public class MainActivity extends BasicActivity {
 
 
         }
-        L.d("我的路径是：", imagPath);
-        /*
-        setPhoto(imagPath);
 
-*/
-        PHOTO_URL = imagPath;
+    //    PHOTO_URL = imagPath;
+        //Bitmap bitmap = BitmapFactory.decodeFile(imagPath);
+        //PHOTO_URL = savePhoto(bitmap);
+
+        crop(uri);
         }
 
+        public void crop(Uri uri)
+        {
+            //File input = new File(PHOTO_URL);
+            File output = createFile();
+            //Uri fileuri = Uri.fromFile(input);
+            Intent intent = new Intent("com.android.camera.action.CROP");
+            intent.setType("image/*");
+            intent.setData(uri);
+            intent.putExtra("aspecty",350);
+            intent.putExtra("aspectx",350);
+            intent.putExtra("outputy",350);
+            intent.putExtra("outputx",350);
+
+            intent.putExtra("return-data",false);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(output));
+            //intent.putExtra("path",path );
+            startActivityForResult(intent,IMAGE_CUT);
 
 
+        }
+
+    public void Diolog(String [] strings, String title)
+        {//弹出一个Diolog,参数对话框的item数组和一个标题
+           // 这里边调用了getphoto函数得到照片
+
+            new AlertDialog.Builder(mContext)
+                    .setTitle(title)
+                    .setItems(strings, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            switch (which)
+                            {
+                                case 0:
+                                    getPhoto();//得到我在内中我们图片的位置
+                                   //savePhoto(PHOTO_URL);
+                                    break;
+                                case 1:
+                                    dialog.dismiss();
+
+                            }
+                        }
+                    }).show();
+        }
     private String getImagePath(Uri uri, String selection) {
         String path = null;
         Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
@@ -351,5 +410,54 @@ public class MainActivity extends BasicActivity {
         return path;
     }
 
+
+    public File createFile()
+    {
+        //创建一个存放头像的file
+        String path = Environment.getExternalStorageDirectory().getPath()+"/Ownplan";
+        String realPath = path + "/myICon";
+        File dec = new File(path);
+        File dec1 = new File(realPath);
+        if(!dec.exists())
+        {
+            dec.mkdirs();
+            if(!dec1.exists())
+            {
+                dec1.mkdirs();
+            }
+
+        }
+        File file = new File(dec1,"myPhoto.jpg");
+        return file;
+    }
+    public String savePhoto(Bitmap  bitmap)
+    {
+        String Photopath = null;
+        createFile();
+        File file = createFile();
+        FileOutputStream fos = null;
+        try {
+             fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+          if(fos != null)
+          {
+              try {
+                  fos.close();
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+
+
+          }
+        }
+        Photopath = file.getPath();
+
+
+
+        return Photopath;
+    }
 
 }
