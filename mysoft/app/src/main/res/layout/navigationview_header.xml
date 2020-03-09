@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--侧滑栏上面的头像以及输入框和名字的layout-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/headlayout"
-    android:orientation="horizontal">
+    android:paddingBottom="5dp"
+
+   >
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageview"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:src="@drawable/user"
+        android:paddingRight="10dp"
        android:layout_centerInParent="true">
 
     </de.hdodenhof.circleimageview.CircleImageView>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+       android:layout_toRightOf= "@+id/circleImageview"
         >
         <TextView
+            android:id="@+id/yourname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:textSize="14sp"
             android:text="yjc的账号">
 
         </TextView>
         <EditText
+            android:layout_below="@+id/yourname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="请输入你的签名"
             >
         </EditText>
-    </LinearLayout>
+    </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

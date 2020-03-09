@@ -1,8 +1,12 @@
 package com.ownplan.com.ownplan.views;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,19 +19,25 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.navigation.NavigationView;
-import com.ownplan.com.ownplan.utils.ChooseDialog;
 import com.ownplan.logintest.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CehuaView extends LinearLayout {
+    public static final int  REQ_PERMISON = 1;
+    public static final int CHOSE_PHOTO = 2;
+    private static final int IMAGE_CUT = 3;
+    //public static String PHOTO_PATH = null;
     private Newbutton back;
     private Newbutton set;
     private NavigationView navigationView;
     private Context mcontext;
     private Bitmap bitmap;
+    private CircleImageView circleImageView ;
 
 
     public CehuaView(Context context, @Nullable AttributeSet attrs) {
@@ -52,25 +62,27 @@ public class CehuaView extends LinearLayout {
         //先加载头布局
         View headerView = navigationView.inflateHeaderView(R.layout.navigationview_header);
         //在头布局中找到我们的circleImageView
-        CircleImageView circleImageView = headerView.findViewById(R.id.circleImageview);
+         circleImageView = headerView.findViewById(R.id.circleImageview);
+
         circleImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mcontext,"点击头像了",Toast.LENGTH_LONG).show();
-                //这里需要得到现在的图片传递给我们后面的activity
-                bitmap = BitmapFactory.decodeResource(getResources(),R.id.circleImageview);
+                if (ContextCompat.checkSelfPermission(mcontext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions((Activity)mcontext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_PERMISON);
 
-                Intent  intent = new Intent(mcontext, ChooseDialog.class);
-                intent.putExtra("Bitmap", bitmap);
+                } else {
+                    String [] items = new String[]
+                            {"选择图片","取消"};
+                    Diolog(items,"设置头像");
 
-                if(mcontext instanceof Activity)
-                {
-                    ((Activity)mcontext).startActivityForResult(intent, 1);
                 }
-//            mcontext.startActivity(intent);
 
             }
         });
+
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -122,4 +134,46 @@ public class CehuaView extends LinearLayout {
         this.navigationView = navigationView;
     }
 
+
+    public void Diolog(String [] strings, String title)
+    {//弹出一个Diolog,参数对话框的item数组和一个标题
+        // 这里边调用了getphoto函数得到照片
+
+        new AlertDialog.Builder(mcontext)
+                .setTitle(title)
+                .setItems(strings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which)
+                        {
+                            case 0:
+                                getPhoto();//得到我在内中我们图片的位置
+                                //savePhoto(PHOTO_URL);
+                                break;
+                            case 1:
+                                dialog.dismiss();
+
+                        }
+                    }
+                }).show();
+    }
+    public void getPhoto() {
+
+        //打开相册
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+
+        if(mcontext instanceof Activity)
+        {
+            ((Activity)mcontext).startActivityForResult(intent, CHOSE_PHOTO);
+        }
+        //(Activity(mcontext)).startActivityForResult(intent, CHOSE_PHOTO);
+    }
+    public void setPhoto(String s)
+    {
+        circleImageView.setImageBitmap(BitmapFactory.decodeFile(s));
+
+
+    }
 }

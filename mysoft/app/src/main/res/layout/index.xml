@@ -22,26 +22,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--这是主界面-->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+           >
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/mViewPage"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 tools:context="com.ownplan.com.ownplan.index.Index">
 
             </androidx.viewpager.widget.ViewPager>
 
             <com.ownplan.com.ownplan.views.FourtableView
                 android:id="@+id/sige"
+                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.ownplan.com.ownplan.views.FourtableView>
-        </LinearLayout>
+        </RelativeLayout>
 
         <!--这是侧滑栏-->
 
