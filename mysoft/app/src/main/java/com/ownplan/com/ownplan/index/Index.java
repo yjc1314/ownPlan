@@ -51,11 +51,9 @@ public class Index extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.index);
-        //这里fourtableView 需要Viewpager用于监听，Viewpager需要Tablist
         fourtableView = findViewById(R.id.sige);
 
         initview();//这里边有一个Viewpager
-        //获得前面的Viewpager，里面的Listener要用
         fourtableView.setmViewPager(mViewPager);
 
     }
@@ -138,7 +136,6 @@ public class Index extends BasicActivity {
 
 
                 }
-                //得到了tempurl 这个就是所在文件的目录
                 break;
             case IMAGE_CUT:
                 if(resultCode == RESULT_OK)
@@ -194,9 +191,6 @@ public class Index extends BasicActivity {
 
         }
 
-        //    PHOTO_URL = imagPath;
-        //Bitmap bitmap = BitmapFactory.decodeFile(imagPath);
-        //PHOTO_URL = savePhoto(bitmap);
 
         crop(uri);
     }
