@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--侧滑栏上面的头像以及输入框和名字的layout-->
+<!--侧滑栏上面的头像以及输入框和名字的layout,这个布局在侧滑中加载头部的时候加载-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/headlayout"
     android:paddingBottom="5dp"
+    android:background="@android:color/holo_blue_light"
 
    >
     <de.hdodenhof.circleimageview.CircleImageView

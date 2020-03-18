@@ -11,4 +11,18 @@
         android:text="这里放入我们的日记">
 
     </TextView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp"
+
+        android:elevation="8dp"
+        android:src="@drawable/user"
+        >
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 </RelativeLayout>
