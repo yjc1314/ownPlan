@@ -4,6 +4,8 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.ownplan.com.ownplan.fragements.TabFragment;
 import com.ownplan.com.ownplan.utils.BasicActivity;
+import com.ownplan.com.ownplan.utils.L;
 import com.ownplan.com.ownplan.utils.Plan;
 import com.ownplan.com.ownplan.views.CehuaView;
 import com.ownplan.com.ownplan.views.FourtableView;
@@ -30,6 +33,7 @@ import com.ownplan.com.ownplan.views.Tabview;
 import com.ownplan.logintest.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +43,9 @@ public class Index extends BasicActivity {
     public static final int REQ_PERMISON = 1;
     public static final int CHOSE_PHOTO = 2;
     private static final int IMAGE_CUT = 3;
-    private Plan mplan = null;
     public static String PHOTO_URL = null;//这个就是头像的路径
+    private Plan mplan = null;
+
     private CehuaView cehuaView;
     private FourtableView fourtableView;//这个是下面的四个按钮组成的一个view
     private ViewPager mViewPager;
@@ -103,7 +108,9 @@ public class Index extends BasicActivity {
 
         cehuaView = findViewById(R.id.cehua);
         if (PHOTO_URL != null) {
-            cehuaView.setPhoto(PHOTO_URL);
+            PHOTO_URL = createFile().getPath();
+            Bitmap temp = BitmapFactory.decodeFile(PHOTO_URL);
+            cehuaView.setPhoto(temp);
         }
 
        /*toolbar = findViewById(R.id.toolbar);
@@ -144,32 +151,36 @@ public class Index extends BasicActivity {
                 if (resultCode == RESULT_OK) {
                     if (data != null) {
                         PHOTO_URL = createFile().getPath();
-                        break;
+                        Bitmap temp = BitmapFactory.decodeFile(PHOTO_URL);
+                        cehuaView.setPhoto(temp);
+
 
                     }
-
+                    break;
                 }
             case CHONSE_PLAN:
-                if (data.getBooleanExtra("ok", false)) {
-                    returnPlan(data.getStringExtra("time"), data.getStringExtra("doWhat"));
-                   Toast.makeText(this, mplan.getTime() + "你要干什么" + mplan.getDoWhat(), Toast.LENGTH_LONG).show();
+                if (requestCode == RESULT_OK) {
+                    if (data.getBooleanExtra("ok", false)) {//这个条件好像有问题
+                        returnPlan(data.getStringExtra("time"), data.getStringExtra("doWhat"));
+                        Toast.makeText(this, mplan.getTime() + mplan.getDoWhat(), Toast.LENGTH_SHORT).show();
 
 
-                } else {
-                    mplan = null;
-                    Toast.makeText(this, "你取消了设置计划", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mplan = null;
+                        Toast.makeText(this, "你取消了设置计划", Toast.LENGTH_SHORT).show();
 
+                    }
                 }
                 break;
 
 
         }
-        cehuaView.setPhoto(PHOTO_URL);
+
     }
 
     private void returnPlan(String time, String doWhat) {
 
-        mplan = new Plan(doWhat,time);
+        mplan = new Plan(time, doWhat);
     }
 
     public Plan putPlan() {
@@ -221,19 +232,23 @@ public class Index extends BasicActivity {
 
     public void crop(Uri uri) {
         //File input = new File(PHOTO_URL);
-        File output = createFile();
+        // L.d("uri"+uri.toString());
+        Uri Photo_uri = createFile();
         //Uri fileuri = Uri.fromFile(input);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
         intent.setData(uri);
-        intent.putExtra("aspecty", 350);
-        intent.putExtra("aspectx", 350);
-        intent.putExtra("outputy", 350);
-        intent.putExtra("outputx", 350);
+        intent.putExtra("aspecty", 50);
+        intent.putExtra("aspectx", 50);
+        intent.putExtra("outputy", 50);
+        intent.putExtra("outputx", 50);
 
         intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
+        //存储到目的位置
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Photo_uri);
         //intent.putExtra("path",path );
+        //intent.putExtra("path",Uri.fromFile(output));
+
         startActivityForResult(intent, IMAGE_CUT);
 
 
@@ -255,21 +270,24 @@ public class Index extends BasicActivity {
         return path;
     }
 
-    public File createFile() {
+    public Uri createFile() {
         //创建一个存放头像的file
-        String path = Environment.getExternalStorageDirectory().getPath() + "/Ownplan";
-        String realPath = path + "/myICon";
-        File dec = new File(path);
-        File dec1 = new File(realPath);
-        if (!dec.exists()) {
-            dec.mkdirs();
-            if (!dec1.exists()) {
-                dec1.mkdirs();
+        String path = Environment.getExternalStorageDirectory().toString();
+        File newfile = new File(path+"/Myicon.PNG");
+        if(newfile.getParentFile()!=null &&!newfile.getParentFile().exists())
+        {
+            newfile.getParentFile().mkdirs();
+        }
+        if (!newfile.exists()) {
+            try {
+                newfile.createNewFile();
+            } catch (IOException e) {
+                Toast.makeText(this, "创建头像失败", Toast.LENGTH_SHORT).show();
             }
 
         }
-        File file = new File(dec1, "myPhoto.jpg");
-        return file;
+        L.d("uri"+newfile.getPath());
+        return Uri.fromFile(newfile);
     }
 
     //这个方法是请求权限的回调方法，如果请求成功我们就设置头像
@@ -291,6 +309,7 @@ public class Index extends BasicActivity {
 
         }
     }
-
-
 }
+
+
+

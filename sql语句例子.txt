@@ -1,0 +1,255 @@
+CREATE TABLE person (
+	NAME VARCHAR (20),
+	age INT,
+	sex VARCHAR (6),
+	birthday DATE
+);
+
+SHOW CREATE TABLE person;
+
+INSERT INTO person (NAME, sex)
+VALUES
+	('尹见才', '男');
+
+SELECT
+	*
+FROM
+	person ALTER TABLE person CHARACTER
+SET gbk;
+
+ALTER TABLE person DROP birthday;
+
+DELETE
+FROM
+	person
+WHERE
+	NAME IS NULL;
+
+/*
+基本的数据类型
+int 
+double(a,b);/总共a位b位小数
+VARCHAR（a）a个字节的字符串
+DATE类型 时间 格式是 yyyy-MM-dd
+timestamp 也是时间 格式是 yyyy-MM-dd hh:mm:ss
+*/
+TRUNCATE TABLE person;
+
+-- 表示删除这个表创建一个一样的
+--                新表，如果使用delete会执行很多次效率低下
+UPDATE person
+SET age = '90'
+WHERE
+	NAME = '尹见才';
+
+UPDATE person
+SET NAME = 'yjc'
+WHERE
+	age = '10';
+
+ALTER TABLE person ADD id INT;
+
+-- 添加一个列
+UPDATE person
+SET id = 1
+WHERE
+	NAME = 'yjc';
+
+UPDATE person
+SET id = 2
+WHERE
+	NAME = '尹见才' ALTER TABLE person CHANGE sex nannv;
+
+DESC person;
+
+ALTER TABLE person RENAME TO stu;
+
+-- 修改表名
+ALTER TABLE stu CHANGE eat food VARCHAR (10);
+
+-- 修改列名和数据类型
+ALTER TABLE stu MODIFY food INT;
+
+-- 修改一个列的数据类型
+ALTER TABLE stu ADD eat INT AFTER NAME;
+
+-- 增加
+ALTER TABLE stu DROP food;
+
+-- 删除一个列
+SELECT
+	*
+FROM
+	stu;
+
+DESC stu;
+
+ALTER TABLE stu ADD birthday DATe AFTER NAME;
+
+UPDATE stu
+SET birthday = '1999-11-11'
+WHERE
+	id = 1;
+
+ALTER TABLE stu ADD time TIMESTAMP AFTER sex;
+
+UPDATE stu
+SET birthday = '1997-03-07'
+WHERE
+	birthday IS NULL;
+
+SELECT
+	*
+FROM
+	stu;
+
+INSERT INTO stu (NAME, id)
+VALUES
+	("王8", 2),
+	("王1", 2),
+	-- 插入多条数据的写法
+	("王2", 2);
+
+SELECT DISTINCT
+	id
+FROM
+	stu;
+
+-- 选择的结果去除重复的部分如上面加入之后的结果是1 2 4
+SELECT DISTINCT
+	id,
+	time
+FROM
+	stu;
+
+SELECT
+	*
+FROM
+	stu;
+
+-- 四则运算都是可以的 + - * /          null参与的运算都是 NULL
+SELECT
+	age AS 年龄,
+	id AS 学号,
+	IFNULL(age, 0) - IFNULL(id, 0) AS 总分
+FROM
+	stu;
+
+-- IFNULL(字段,null的话为的值是)  as zongfen 列的名字是as 名字
+SELECT
+	*
+FROM
+	stu;
+
+UPDATE stu
+SET age = 70
+WHERE
+	id = 4;
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	age BETWEEN 50
+AND 60;
+
+-- BETWEEN AND 上下限都是包括的
+SELECT
+	*
+FROM
+	stu
+WHERE
+	birthday IS NULL;
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	1;
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	LIKE SELECT
+		*
+	FROM
+		stu
+	WHERE
+		age IN (10, 20, 79, 70);
+
+-- in 后面的集合都可以 相当于后面的
+SELECT
+	*
+FROM
+	stu
+WHERE
+	age = 10
+OR age = 20
+OR age = 79
+OR age = 70;
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	age = 70;
+
+-- 等于直接写=就可以  不等与！=
+SELECT
+	*
+FROM
+	stu
+WHERE
+	age > 10
+AND age < 79;
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	age > 10 && age < 79;
+
+-- 这两句效果一样上面那句好一点，理由不知道
+/**
+like 的占位符
+ % 后面的多个字符
+ _ 后面的一个字符
+**/
+SELECT
+	*
+FROM
+	stu
+WHERE
+	NAME LIKE "王_";
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	NAME LIKE "王%";
+
+INSERT INTO stu (NAME, id)
+VALUES
+	("王八蛋", 10);
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	NAME LIKE "___";
+
+SELECT
+	*
+FROM
+	stu
+WHERE
+	NAME LIKE "%王%";
+

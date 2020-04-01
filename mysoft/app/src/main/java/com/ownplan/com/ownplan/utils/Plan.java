@@ -5,7 +5,7 @@ public class Plan {
     private  String doWhat;
     private String time ;
 
-    public Plan(String doWhat, String time) {
+    public Plan(String time, String doWhat) {
 
         this.doWhat = doWhat;
         this.time = time;

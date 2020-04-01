@@ -25,6 +25,16 @@ public class Edit_plan extends BasicActivity {
     private  TimePicker timePicker;
     private EditText  editText ;
 
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent();
+        intent.putExtra("ok",false);
+        setResult(CHONSE_PLAN,intent);
+        finish();
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +48,17 @@ public class Edit_plan extends BasicActivity {
         //获得timepick中的时间返回字符串
         timePicker = findViewById(R.id.timepick);
         timePicker.setIs24HourView(true);
+
         time = timePicker.getHour()+ ":" + timePicker.getMinute();
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                time = hourOfDay + ":" + minute;
+                String min = minute+"";
+                if(minute < 10)
+                {
+                 min = "0"+minute;
+                }
+                time = hourOfDay + ":" + min;
             }
         });
 

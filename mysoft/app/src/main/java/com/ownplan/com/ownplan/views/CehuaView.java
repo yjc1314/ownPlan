@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.MenuItem;
@@ -23,7 +22,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ownplan.com.ownplan.index.Index;
 import com.ownplan.logintest.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,16 +71,35 @@ public class CehuaView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mcontext,"点击头像了",Toast.LENGTH_LONG).show();
-                if (ContextCompat.checkSelfPermission(mcontext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((Activity)mcontext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_PERMISON);
+                String [] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+                List <String> nopermisioned = new ArrayList();
+                Boolean allPermission = false;
 
-                } else {
-                    String [] items = new String[]
-                            {"选择图片","取消"};
-                    Diolog(items,"设置头像");
+                for(int i = 0 ;i<permissions.length;i++)
+                {
+                    if(ContextCompat.checkSelfPermission(getContext(),permissions[i])!= PackageManager.PERMISSION_GRANTED)
+                    {
+                        ActivityCompat.requestPermissions((Index)getContext(),new String[]{permissions[i]},REQ_PERMISON);
+                        nopermisioned.add(permissions[i]);
+                    }
+                    allPermission = true;
+                }
+                for(String s :nopermisioned)
+                {
+                    if(ContextCompat.checkSelfPermission(getContext(),s)!= PackageManager.PERMISSION_GRANTED)
+                    {
+                        allPermission = false;
+                    }
+
 
                 }
+                  if(nopermisioned.size()<1){
+                        String[] items = new String[]
+                                {"选择图片", "取消"};
+                        Diolog(items, "设置头像");
+
+                    }
 
             }
         });
@@ -170,9 +192,10 @@ public class CehuaView extends LinearLayout {
         }
         //(Activity(mcontext)).startActivityForResult(intent, CHOSE_PHOTO);
     }
-    public void setPhoto(String s)
+    public void setPhoto(Bitmap  s)
     {
-        circleImageView.setImageBitmap(BitmapFactory.decodeFile(s));
+
+        circleImageView.setImageBitmap(s);
 
 
     }
