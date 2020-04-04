@@ -107,28 +107,18 @@ public class Index extends BasicActivity {
 
 
         cehuaView = findViewById(R.id.cehua);
-        if (PHOTO_URL != null) {
-            PHOTO_URL = createFile().getPath();
+        File tempfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/ownplan/Myicon.PNG");
+
+        if (tempfile.exists()) {
+            PHOTO_URL = tempfile.getAbsolutePath();
             Bitmap temp = BitmapFactory.decodeFile(PHOTO_URL);
             cehuaView.setPhoto(temp);
         }
-
-       /*toolbar = findViewById(R.id.toolbar);
-        //下面的作用是我们有一个关联的动画
-        setSupportActionBar(toolbar);//将toolbar与ActionBar关联
-        drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, 0, 0);
-        drawerLayout.addDrawerListener(toggle);//初始化状态
-        toggle.syncState();*/
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         switch (requestCode) {
             case CHOSE_PHOTO:
                 if (resultCode == RESULT_OK) {
@@ -159,7 +149,7 @@ public class Index extends BasicActivity {
                     break;
                 }
             case CHONSE_PLAN:
-                if (requestCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     if (data.getBooleanExtra("ok", false)) {//这个条件好像有问题
                         returnPlan(data.getStringExtra("time"), data.getStringExtra("doWhat"));
                         Toast.makeText(this, mplan.getTime() + mplan.getDoWhat(), Toast.LENGTH_SHORT).show();
@@ -170,6 +160,8 @@ public class Index extends BasicActivity {
                         Toast.makeText(this, "你取消了设置计划", Toast.LENGTH_SHORT).show();
 
                     }
+                }else {
+                    Toast.makeText(this,"出现错误了",Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -273,7 +265,7 @@ public class Index extends BasicActivity {
     public Uri createFile() {
         //创建一个存放头像的file
         String path = Environment.getExternalStorageDirectory().toString();
-        File newfile = new File(path+"/Myicon.PNG");
+        File newfile = new File(path+"/ownplan/Myicon.PNG");
         if(newfile.getParentFile()!=null &&!newfile.getParentFile().exists())
         {
             newfile.getParentFile().mkdirs();

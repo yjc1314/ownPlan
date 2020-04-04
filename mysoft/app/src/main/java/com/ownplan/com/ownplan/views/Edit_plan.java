@@ -30,7 +30,9 @@ public class Edit_plan extends BasicActivity {
 
         Intent intent = new Intent();
         intent.putExtra("ok",false);
-        setResult(CHONSE_PLAN,intent);
+
+        setResult(RESULT_OK,intent);
+
         finish();
 
     }
@@ -77,7 +79,7 @@ public class Edit_plan extends BasicActivity {
             intent.putExtra("ok",true);
             intent.putExtra("time",time);
             intent.putExtra("doWhat",doWhat);
-            setResult(CHONSE_PLAN,intent);
+            setResult(RESULT_OK,intent);
             finish();
         }
     });
@@ -87,7 +89,7 @@ public class Edit_plan extends BasicActivity {
                 //这里确认设置
                 Intent intent = new Intent();
                 intent.putExtra("ok",false);
-                setResult(CHONSE_PLAN,intent);
+                setResult(RESULT_OK,intent);
                 finish();
             }
         });

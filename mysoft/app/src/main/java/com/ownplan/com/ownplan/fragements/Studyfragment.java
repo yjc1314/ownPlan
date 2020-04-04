@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,9 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 目前进度，可以加入一个计划，但是没有保存下来，就是app退出直接消失，
- * 加的东西就没有了，所以需要保存我们的list这样子每次加载我么从文件中读取
- * 就不会消失了，还需要我们加入删除的按钮，可以删除我们的每一个计划。
+ * 达成目标添button 可以出去数据库，拿到数据
+ * 悬浮按钮的图标不好看。
  *
  */
 public class Studyfragment extends Fragment{
@@ -65,7 +63,7 @@ public class Studyfragment extends Fragment{
     private void inserttplan(){
         if(((Index)getActivity()).putPlan() != null) {
             Plan mplan = (((Index)getActivity())).putPlan();
-            Toast.makeText(getContext(), mplan.getTime() + "你要干什么" + mplan.getDoWhat(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), mplan.getTime() + "你要干什么" + mplan.getDoWhat(), Toast.LENGTH_LONG).show();
 
             //  L.d(((Index) context).putPlan().getTime()+((Index) context).putPlan().getDoWhat());
            //调用Index中的putplan方法
