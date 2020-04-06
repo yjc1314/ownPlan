@@ -21,22 +21,22 @@ list中有存放plan。
  */
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder>
 {
+    private Context mcontext; //获得上下文对象
+    private List<Plan> mlist; // 这里是所有的
 
     public PlanAdapter(List<Plan> mlist) {
         this.mlist = mlist;
     }
 
 
-    private Context mcontext;
 
-    private List<Plan> mlist;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //加载子项的布局
         mcontext = parent.getContext();
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleviewitem_indiary, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleviewitem_inplan, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;

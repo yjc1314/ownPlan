@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-->diarylist中的item<-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/time"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/primary_text_dark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+        </TextView>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical">
+        <TextView
+            android:id="@id/title"
+            android:layout_width="match_parent"
+
+            android:textColor="@android:color/black"
+            android:textSize="35dp"
+            android:layout_height="70dp">
+
+        </TextView>
+        <TextView
+            android:id="@+id/context"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:textColor="@android:color/darker_gray"
+            android:layout_height="10dp">
+
+        </TextView>
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-->这是故事集里边的故事，所有的故事有一个标题，一个类容大概显示左边有日期<-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="wrap_content"
+        style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="笔记"
+
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+    </androidx.appcompat.widget.Toolbar>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/diaryrecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
