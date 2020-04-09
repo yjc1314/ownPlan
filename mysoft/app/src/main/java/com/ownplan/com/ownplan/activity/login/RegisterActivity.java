@@ -133,7 +133,7 @@ public class RegisterActivity extends BasicActivity {
      * 保存账号和密码到SharedPreferences中SharedPreferences
      */
     private void saveRegisterInfo(String userName,String psw){
-        String md5Psw = MD5Utils.md5(psw);//把密码用MD5加密
+        //String md5Psw = MD5Utils.md5(psw);//把密码用MD5加密
         //loginInfo表示文件名, mode_private SharedPreferences sp = getSharedPreferences( );
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
 
@@ -141,7 +141,7 @@ public class RegisterActivity extends BasicActivity {
         SharedPreferences.Editor editor=sp.edit();
         //以用户名为key，密码为value保存在SharedPreferences中
         //key,value,如键值对，editor.putString(用户名，密码）;
-        editor.putString(userName, md5Psw);
+        editor.putString(userName, psw);
         //提交修改 editor.commit();
         editor.apply();
     }
