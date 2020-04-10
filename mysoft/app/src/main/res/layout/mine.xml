@@ -1,21 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--跳转到我的时候显示在主界面的viewpager上面的界面-->
+<?xml version="1.0" encoding="utf-8"?><!--跳转到我的时候显示在主界面的viewpager上面的界面-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    >
-    <TextView
-
-        android:textSize="60dp"
-        android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/minetoolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/wode"
-        android:text="这是我的界面"
-        android:textColor="#00ff00"
-        ></TextView>
+        android:layout_height="?actionBarSize"
+        android:background="@android:color/holo_purple"
+        app:subtitleTextColor="@android:color/white"
+        app:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar"
+        app:title="yjc"
+        app:titleTextColor="@android:color/black">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <Button
+                android:id="@+id/dairy_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:text="日记"
+                android:textColor="@android:color/holo_blue_light">
+
+            </Button>
+
+            <Button
+                android:id="@+id/study_buttton"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="笔记"
+                android:textColor="@android:color/holo_blue_light">
+
+            </Button>
+
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/myviewpager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </androidx.viewpager.widget.ViewPager>
 
 </LinearLayout>

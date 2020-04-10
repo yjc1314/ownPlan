@@ -6,23 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <!--标题栏样式一-->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="@color/colorPrimary"
-        app:subtitleTextColor="@android:color/white"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="yjc"
-        app:titleTextColor="@android:color/white">
-    </androidx.appcompat.widget.Toolbar>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
         android:layout_height="match_parent">
         <!--这是主界面-->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -38,6 +29,7 @@
 
             <com.ownplan.com.ownplan.views.FourtableView
                 android:id="@+id/sige"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.ownplan.com.ownplan.views.FourtableView>
