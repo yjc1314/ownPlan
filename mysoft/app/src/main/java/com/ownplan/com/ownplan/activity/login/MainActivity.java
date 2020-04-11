@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.ownplan.com.ownplan.activity.login.beans.User;
 import com.ownplan.com.ownplan.index.Index;
 import com.ownplan.com.ownplan.utils.BasicActivity;
+import com.ownplan.com.ownplan.utils.L;
 import com.ownplan.logintest.R;
 
 import java.io.IOException;
@@ -41,20 +42,6 @@ public class MainActivity extends BasicActivity {
 
     private  static final String url ="http://192.168.43.99/demo"; //服务器验证
     private OkHttpClient client = new OkHttpClient();
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case POST_BACK:
-
-                    String conme = msg.getData().get("result").toString();
-                    Gson gson = new Gson();
-
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +57,7 @@ public class MainActivity extends BasicActivity {
         }
         setContentView(R.layout.activity_main);
         //设置此界面为竖屏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         init();
         // L.d("我的路径是：",PHOTO_URL);
 
@@ -247,12 +234,14 @@ public class MainActivity extends BasicActivity {
         try {
             Response response = call.execute();
           user = gson.fromJson(response.body().string(), User.class);
+            L.d("tag",requestBody);
           if(user.getName() == needuser.getName()&&user.getPassword() == needuser.getPassword())
           {
               return true;
           }
 
         } catch (IOException e) {
+            L.d(e.getMessage());
           Toast.makeText(this,"连接网络失败",Toast.LENGTH_LONG).show();
         }
         return false;
