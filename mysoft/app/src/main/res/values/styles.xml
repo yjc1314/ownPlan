@@ -58,5 +58,12 @@
         <item name="android:text">@string/crop__cancel</item>
     </style>
 
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/edit_nocheck</item>
+        <item name="colorControlActivated">@color/edit_nochecked</item>
+    </style>
+
+
+
 
 </resources>

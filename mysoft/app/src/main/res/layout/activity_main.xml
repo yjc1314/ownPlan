@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg"
+    android:background="@mipmap/newback"
     android:orientation="vertical">
 
     <!--显示头像，记得加入id iv_head -->
@@ -15,8 +15,9 @@
         android:layout_marginTop="35dp">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleImageview"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:src="@drawable/nophoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
 
             android:layout_gravity="left"
             android:gravity="center">
@@ -32,9 +33,11 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:hint="账号"
+        android:theme="@style/MyEditText"
         android:textSize="20sp" />
     <!--输入框-->
     <EditText
+        android:theme="@style/MyEditText"
         android:id="@+id/et_psw"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
@@ -47,7 +50,7 @@
     <Button
         android:id="@+id/login"
         android:text="登录"
-        android:background="#1E90FF"
+        android:background="#DAD2D2"
         android:textSize="24sp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"

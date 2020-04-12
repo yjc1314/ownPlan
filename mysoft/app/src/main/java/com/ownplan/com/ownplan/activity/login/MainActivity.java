@@ -16,7 +16,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.ownplan.com.ownplan.activity.login.beans.User;
+import com.ownplan.com.ownplan.activity.login.httpconnect.HttpContains;
+import com.ownplan.com.ownplan.activity.login.httpconnect.HttpUtil;
 import com.ownplan.com.ownplan.index.Index;
 import com.ownplan.com.ownplan.utils.BasicActivity;
 import com.ownplan.com.ownplan.utils.L;
@@ -26,6 +29,7 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -39,8 +43,8 @@ public class MainActivity extends BasicActivity {
     private EditText et_user_name, et_psw;//编辑框
     public CircleImageView circleimageView;//头像框
     public  static final int POST_BACK = 111;
-
-    private  static final String url ="http://192.168.43.99/demo"; //服务器验证
+    public static final int REGIETER_CODE = 1;
+    private  static final String url = HttpContains.URL; //服务器验证
     private OkHttpClient client = new OkHttpClient();
 
     @Override
@@ -64,13 +68,11 @@ public class MainActivity extends BasicActivity {
     }
     //获取界面控件
     private void init() {
-        //从main_title_bar中获取的id
-        //从activity_login.xml中获取的
         TextView tv_register = (TextView) findViewById(R.id.register);
         TextView tv_find_psw = (TextView) findViewById(R.id.find_psw);
         Button btn_login = (Button) findViewById(R.id.login);
         circleimageView = findViewById(R.id.circleImageview);
-        circleimageView.setImageResource(R.drawable.luntan);
+        circleimageView.setImageResource(R.drawable.nophoto);
 
 
         et_user_name = (EditText) findViewById(R.id.et_user_name);
@@ -81,7 +83,7 @@ public class MainActivity extends BasicActivity {
             public void onClick(View v) {
                 //为了跳转到注册界面，并实现注册功能
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, REGIETER_CODE);
             }
         });
         //找回密码控件的点击事件
@@ -98,38 +100,20 @@ public class MainActivity extends BasicActivity {
                 //开始登录，获取用户名和密码 getText().toString().trim();
                 userName = et_user_name.getText().toString().trim();
                 psw = et_psw.getText().toString().trim();
-                spPsw = readPsw(userName);
+
                 // TextUtils.isEmpty
                 User user = new User();
-                user.setPassword(spPsw);
+                user.setPassword(psw);
                 user.setName(userName);
 
-                if (TextUtils.isEmpty(userName)) {
+                if (TextUtils.isEmpty(userName)) {//用户名为空
                     Toast.makeText(MainActivity.this, "请输入用户名", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(psw)) {
+                } else if (TextUtils.isEmpty(psw)) {//密码为空
                     Toast.makeText(MainActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-                    // md5Psw.equals(); 判断，输入的密码加密后，是否与保存在SharedPreferences中一致
-                } else if (loginhost(user)) {
-                    //一致登录成功
-                    Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    //保存登录状态，在界面保存登录的用户名 定义个方法 saveLoginStatus boolean 状态 , userName 用户名;
-                    saveLoginStatus(true, userName);
-                    //登录成功后关闭此页面进入主页
-                    Intent data = new Intent();
-                    //datad.putExtra( ); name , value ;
-                    data.putExtra("isLogin", true);
-                    //RESULT_OK为Activity系统常量，状态码为-1
-                    // 表示此页面下的内容操作成功将data返回到上一页面，如果是用back返回过去的则不存在用setResult传递data值
-                    setResult(RESULT_OK, data);
-                    //销毁登录界面
 
-                    MainActivity.this.finish();
-                    //跳转到主界面，登录成功的状态传递到 MainActivity 中
-                    startActivity(new Intent(MainActivity.this, Index.class));
-                } else if ((spPsw != null && !TextUtils.isEmpty(spPsw) && !loginhost(user))) {
-                    Toast.makeText(MainActivity.this, "输入的用户名和密码不一致", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "此用户名不存在", Toast.LENGTH_SHORT).show();
+                } else //都不是空的调用httplogin
+                {
+                    loginWithOkHttp(url+"login",userName,psw);
                 }
             }
         });
@@ -165,6 +149,7 @@ public class MainActivity extends BasicActivity {
         //提交修改
         editor.apply();
     }
+    //第二次之后的登录从sp中读取数据，如果已经登录了就不需要在进入登录界面
     private Boolean checkLogin(SharedPreferences sp)
     {
         Boolean Islogin = sp.getBoolean("isLogin",false);
@@ -188,7 +173,7 @@ public class MainActivity extends BasicActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 1:
+            case REGIETER_CODE:
                 if (data != null) {
                     //是获取注册界面回传过来的用户名
                     // getExtra().getString("***");
@@ -208,45 +193,51 @@ public class MainActivity extends BasicActivity {
 
     }
 
+
     /**
-     * 从服务器判断我们是否登录成功
-     * @param needuser
-     * @return
+     * 传入密码和账户里边处理逻辑
+     * @param address
+     * @param account
+     * @param password
      */
-    public boolean loginhost( User needuser)
-    {
-
-        User user = null;
-        //将对象转化为json对象
-        final Gson gson = new Gson();
-        String s = gson.toJson(needuser);
-        //使用 okhttp    client 已经有了 在最上面是成员变量
-        //因为我们是post所以我们需要构造我们的reqpostbody  html 中的请求体
-        RequestBody requestBody = FormBody.create(MediaType.parse(
-                "application/json;charset=utf-8"),s);
-        // 获取request
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-
-        //异步开启 管理我们的request 这里不因该是异步，因该同步
-        Call call = client.newCall(request);
-        //使用call执行
-        //登录用同步
-        try {
-            Response response = call.execute();
-          user = gson.fromJson(response.body().string(), User.class);
-            L.d("tag",requestBody);
-          if(user.getName() == needuser.getName()&&user.getPassword() == needuser.getPassword())
-          {
-              return true;
-          }
-
-        } catch (IOException e) {
-            L.d(e.getMessage());
-          Toast.makeText(this,"连接网络失败",Toast.LENGTH_LONG).show();
-        }
-        return false;
+    public void loginWithOkHttp(String address, final String account, String password){
+        HttpUtil.loginWithOkHttp(address,account,password, new Callback() {
+            final String name = account;
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                runOnUiThread(new Runnable() {
 
 
+                    @Override
+
+                    public void run() {
+                        L.d(e.getMessage());
+                        Toast.makeText(MainActivity.this,"失败"+e.getCause(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //在这里对异常情况进行处理
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //得到服务器返回的具体内容
+                final String responseData = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (responseData.equals("true")){
+
+                            Toast.makeText(MainActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
+                            saveLoginStatus(true,account);
+                            Intent intent = new Intent(MainActivity.this,Index.class);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            Toast.makeText(MainActivity.this,"登录失败"+responseData.toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
     }
 }
 

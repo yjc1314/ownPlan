@@ -5,7 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="black">#ff000000</color>
     <color name="green">#ff45C01A</color>
-
+    <color name="edit_nocheck">#5A4F4F</color>
+    <color name="edit_nochecked">#30CFCF</color>
     <color name="crop__button_bar">#f3f3f3</color>
     <color name="crop__button_text">#666666</color>
     <color name="crop__selector_pressed">#1a000000</color>

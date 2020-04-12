@@ -161,7 +161,7 @@ public class Index extends BasicActivity {
 
                     }
                 }else {
-                    Toast.makeText(this,"出现错误了",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"出现错误了",Toast.LENGTH_SHORT).show();
                 }
                 break;
 

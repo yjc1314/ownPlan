@@ -1,0 +1,7 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+
+<network-security-config>
+
+    　<!--默认允许所有网址使用非安全连接-->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
